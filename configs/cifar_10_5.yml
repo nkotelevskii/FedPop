@@ -1,0 +1,103 @@
+data_params:
+  dataset_name: cifar10
+  generate_dataloaders: true
+  max_dataset_size_per_user: 500
+  min_dataset_size_per_user: 500
+  n_clients_with_min_datasets: 0
+  regression: false
+  root_path: data/cifar10
+  specific_dataset_params:
+    classes_per_user: 5
+    n_clients: 100
+    num_classes: 10
+  test_batch_size: 100
+  train_batch_size: 60
+eval_params:
+  metrics:
+  - accuracy
+model_params:
+  backbone_model_name: IdenticalBackbone
+  backbone_model_params:
+    backbone_embedding_size: 10
+  composition_model_regime: composition
+  personal_model_name: MLPClassificationImages_personal
+  personal_model_params:
+    input_size: 64
+    n_classes: 10
+  prior_model_name: GaussianPriorModel
+  prior_model_params:
+    fix_mu: true
+    fix_scale: true
+    in_features: 650
+    n_modes: null
+    scale_init: 0.54
+    scale_value: 0.54
+  shared_model_name: BigBaseConvNetCIFAR
+  shared_model_params:
+    shared_embedding_size: 64
+  shared_prior_model: true
+optimization:
+  backbone_optimizer: Adam
+  backbone_optimizer_params: {}
+  backbone_scheduler: CyclicLR
+  backbone_scheduler_params:
+    base_lr: 0.001
+    cycle_momentum: false
+    gamma: 0.99
+    max_lr: 0.003
+    mode: exp_range
+    step_size_up: 10
+  personal_optimizer: Adam
+  personal_optimizer_params:
+    lr: 0.028130067188083023
+  personal_scheduler: MultiStepLR
+  personal_scheduler_params:
+    gamma: 0.6
+    milestones:
+    - 10
+    - 20
+  prior_model_optimizer: Adam
+  prior_model_optimizer_params:
+    lr: 0.1
+  prior_model_scheduler: MultiStepLR
+  prior_model_scheduler_params:
+    gamma: 0.5
+    milestones:
+    - 10
+    - 20
+    - 30
+    - 40
+    - 50
+    - 60
+    - 70
+    - 80
+    - 90
+  shared_optimizer: RMSprop
+  shared_optimizer_params:
+    lr: 0.0017813870436047185
+  shared_scheduler: MultiStepLR
+  shared_scheduler_params:
+    gamma: 0.8
+    milestones:
+    - 10
+    - 20
+    - 30
+    - 40
+    - 50
+    - 60
+train_params:
+  clients_sample_size: 10
+  device: cuda:1
+  exp_folder: ./experiment_logs/
+  inner_burn_in: 5
+  inner_iters: 10
+  loss_fn_name: cross_entropy
+  outer_iters: 100
+  prior: gaussian
+  seeds:
+  - 41
+  - 42
+  - 43
+  use_sgld: false
+  verbose: true
+  verbose_freq: 5

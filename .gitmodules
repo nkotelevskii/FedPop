@@ -1,0 +1,3 @@
+[submodule "reliability-diagrams"]
+	path = reliability-diagrams
+	url = https://github.com/hollance/reliability-diagrams

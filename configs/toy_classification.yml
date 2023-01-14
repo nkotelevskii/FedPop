@@ -1,0 +1,106 @@
+data_params:
+  dataset_name: gaussians
+  root_path: data/toy_data
+  generate_dataloaders: False
+  train_batch_size: 50
+  test_batch_size: 50
+  regression: False
+  specific_dataset_params: {
+    uniform: False,
+    n_clients: 3,
+    num_classes: 3,
+  }
+
+model_params:
+  composition_model_regime: "composition"
+
+  shared_model_name: MLPClassificationModel
+  shared_model_params: { shared_embedding_size: 10 }
+
+  prior_model_name: MLPEnergyModel
+  prior_model_params: { }
+  shared_prior_model: False
+
+  personal_model_name: MLPClassificationModel_personal
+  personal_model_params: { n_classes: 3 }
+
+  backbone_model_name: IdenticalBackbone
+  backbone_model_params: { backbone_embedding_size: 2, input_size: 2 } # Effectively, it is just input data shape
+
+train_params:
+  exp_folder: ./experiment_logs/
+  seeds: [ 41, 42, 43 ]
+
+  loss_fn_name: "cross_entropy"
+  use_sgld: True
+
+  outer_iters: 25
+
+  inner_iters: 10
+  inner_burn_in: 5
+
+  n_personal_models: 3
+  clients_sample_size: 2
+
+  device: "cpu"
+  prior: gaussian
+
+eval_params:
+  metrics: [ accuracy ]
+
+
+optimization:
+  # Personal model optimizer and scheduler parameters
+  personal_optimizer: SGLD
+  personal_optimizer_params: {
+    lr: 0.0001,
+    precondition_decay_rate: 0.95,
+  }
+  personal_scheduler: CyclicLR
+  personal_scheduler_params: {
+    base_lr: 0.01,
+    max_lr: 0.03,
+    step_size_up: 10,
+    mode: exp_range,
+    gamma: 0.99,
+    cycle_momentum: False,
+  }
+
+  # Personal model optimizer and scheduler parameters
+  personal_backbone_optimizer: Adam
+  personal_backbone_optimizer_params: { }
+  personal_backbone_scheduler: CyclicLR
+  personal_backbone_scheduler_params: {
+    base_lr: 0.01,
+    max_lr: 0.03,
+    step_size_up: 10,
+    mode: exp_range,
+    gamma: 0.99,
+    cycle_momentum: False,
+  }
+
+  # Shared model optimizer and scheduler parameters
+  shared_optimizer: Adam
+  shared_optimizer_params: { }
+  shared_scheduler: CyclicLR
+  shared_scheduler_params: {
+    base_lr: 0.01,
+    max_lr: 0.03,
+    step_size_up: 10,
+    mode: exp_range,
+    gamma: 0.99,
+    cycle_momentum: False,
+  }
+
+  # Energy model optimizer and scheduler parameters
+  prior_model_optimizer: Adam
+  prior_model_optimizer_params: { }
+  prior_model_scheduler: CyclicLR
+  prior_model_scheduler_params: {
+    base_lr: 0.01,
+    max_lr: 0.03,
+    step_size_up: 10,
+    mode: exp_range,
+    gamma: 0.99,
+    cycle_momentum: False,
+  }
